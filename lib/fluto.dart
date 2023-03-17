@@ -7,4 +7,9 @@ export 'package:fluto/src/fluto.dart';
 export 'package:fluto/src/plugin/plugin.dart';
 export 'package:fluto/src/ui/components/screen_wrapper.dart';
 export 'package:fluto_plugin_platform_interface/fluto_plugin_platform_interface.dart'
-    show FlutoStorage, Pluggable;
+    show
+        FlutoStorage,
+        Pluggable,
+        Navigation,
+        PluginConfiguration,
+        FlutoPluginManager;

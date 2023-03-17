@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
 
 import 'package:fluto/src/core/plugin_manager.dart';
@@ -18,12 +19,14 @@ class Fluto extends StatefulWidget {
   const Fluto({
     Key? key,
     required this.child,
+    this.show = true,
     this.wrappedWidgetList = const [],
     required this.navigatorKey,
     this.storage = const NoFlutoStorage(),
   }) : super(key: key);
 
   final Widget child;
+  final bool show;
   final List<TransitionBuilder> wrappedWidgetList;
 
   final GlobalKey<NavigatorState> navigatorKey;
@@ -91,7 +94,10 @@ class _FlutoState extends State<Fluto> {
     }
 
     return ChangeNotifierProvider<FlutoProvider>(
-      create: (context) => FlutoProvider(widget.navigatorKey),
+      create: (context) => FlutoProvider(
+        navigatorKey: widget.navigatorKey,
+        show: widget.show,
+      ),
       builder: (context, child) {
         final showDialog = context
             .select<FlutoProvider, bool>((value) => value.showButtonSheet);

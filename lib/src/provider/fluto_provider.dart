@@ -5,11 +5,28 @@ class FlutoProvider extends ChangeNotifier {
   final GlobalKey<NavigatorState> navigatorKey;
   BuildContext? get context => navigatorKey.currentContext;
   PluginSheetState _sheetState = PluginSheetState.closed;
+  bool _show;
+  bool get show => _show;
+  void showFluto(bool show) {
+    _show = show;
+    notifyListeners();
+  }
 
-  FlutoProvider(this.navigatorKey);
+  FlutoProvider({
+    required this.navigatorKey,
+    required bool show,
+  }) : _show = show;
   PluginSheetState get sheetState => _sheetState;
 
-  bool get showDraggingButton => _sheetState == PluginSheetState.closed;
+  bool get showDraggingButton => _showDraggingButton();
+
+  bool _showDraggingButton() {
+    if (_show) {
+      return _sheetState == PluginSheetState.closed;
+    }
+    return false;
+  }
+
   bool get showButtonSheet => _sheetState == PluginSheetState.clicked;
 
   setSheetState(PluginSheetState value) {

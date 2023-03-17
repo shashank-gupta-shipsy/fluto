@@ -5,4 +5,8 @@ import 'package:provider/provider.dart';
 extension FlutoContextExt on BuildContext {
   void showFlutoSheet() =>
       read<FlutoProvider>().setSheetState(PluginSheetState.clicked);
+
+  void showFluto(bool value) {
+    read<FlutoProvider>().showFluto(value);
+  }
 }
