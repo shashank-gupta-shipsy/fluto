@@ -12,10 +12,20 @@ class FlutoProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Map<String, bool> _enabledPlugin = {};
+  Map<String, bool> get enabledPlugin => _enabledPlugin;
+  void setEnabledPlugin(Map<String, bool> value) {
+    _enabledPlugin = {..._enabledPlugin, ...value};
+    notifyListeners();
+  }
+
   FlutoProvider({
     required this.navigatorKey,
     required bool show,
-  }) : _show = show;
+    required Map<String, bool> enabledPlugin,
+  })  : _show = show,
+        _enabledPlugin = enabledPlugin;
+
   PluginSheetState get sheetState => _sheetState;
 
   bool get showDraggingButton => _showDraggingButton();

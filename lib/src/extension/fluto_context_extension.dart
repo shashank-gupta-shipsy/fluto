@@ -9,4 +9,8 @@ extension FlutoContextExt on BuildContext {
   void showFluto(bool value) {
     read<FlutoProvider>().showFluto(value);
   }
+
+  void setEnabledPlugin(Map<String, bool> value) {
+    read<FlutoProvider>().setEnabledPlugin(value);
+  }
 }

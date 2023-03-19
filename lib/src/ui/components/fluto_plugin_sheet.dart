@@ -5,15 +5,26 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 Future<void> showFlutoBottomSheet(BuildContext context) async {
-  final pluginList = FlutoPluginRegistrar.pluginList;
-
-  showModalBottomSheet(
+  await showModalBottomSheet(
     isDismissible: false,
     enableDrag: false,
     context: context,
     builder: (context) {
       final provider = context.read<FlutoProvider>();
+      final pluginList = FlutoPluginRegistrar.pluginList;
       provider.setSheetState(PluginSheetState.clickedAndOpened);
+
+      final enabledPlugin = context.select<FlutoProvider, Map<String, bool>>(
+          (value) => value.enabledPlugin);
+
+      // final pluginToShow = <Pluggable>[];
+
+      // for (var plugin in pluginList) {
+      //   if (enabledPlugin[plugin.devIdentifier] == true) {
+      //     pluginToShow.add(plugin);
+      //   }
+      // }
+
       return WillPopScope(
         onWillPop: () async {
           context.read<FlutoProvider>().setSheetState(PluginSheetState.closed);
@@ -44,14 +55,24 @@ Future<void> showFlutoBottomSheet(BuildContext context) async {
                   itemCount: pluginList.length,
                   itemBuilder: (context, index) {
                     final plugin = pluginList[index];
+                    final isEnable =
+                        enabledPlugin[plugin.devIdentifier] ?? false;
 
-                    return Card(
-                      clipBehavior: Clip.antiAlias,
-                      color: Color.alphaBlend(
-                        Theme.of(context).cardColor,
-                        Theme.of(context).secondaryHeaderColor,
-                      ),
-                      child: FlutoSheetListTile(plugin: plugin),
+                    return AnimatedSize(
+                      // opacity: isEnable ? 1 : 0,
+                      duration: const Duration(milliseconds: 500),
+                      child: isEnable
+                          ? Card(
+                              clipBehavior: Clip.antiAlias,
+                              color: Color.alphaBlend(
+                                Theme.of(context).cardColor,
+                                Theme.of(context).secondaryHeaderColor,
+                              ),
+                              child: FlutoSheetListTile(
+                                  key: Key(plugin.devIdentifier),
+                                  plugin: plugin),
+                            )
+                          : const SizedBox.shrink(),
                     );
                   },
                 ),
@@ -64,7 +85,7 @@ Future<void> showFlutoBottomSheet(BuildContext context) async {
   );
 }
 
-class FlutoSheetListTile extends StatelessWidget {
+class FlutoSheetListTile extends StatefulWidget {
   const FlutoSheetListTile({
     Key? key,
     required this.plugin,
@@ -73,26 +94,34 @@ class FlutoSheetListTile extends StatelessWidget {
   final Pluggable plugin;
 
   @override
+  State<FlutoSheetListTile> createState() => _FlutoSheetListTileState();
+}
+
+class _FlutoSheetListTileState extends State<FlutoSheetListTile> {
+  bool enabled = true;
+  @override
   Widget build(BuildContext context) {
     return ListTile(
       dense: true,
-      leading: Icon(plugin.pluginConfiguration.icon),
-      title: Text(plugin.pluginConfiguration.name),
-      subtitle: plugin.pluginConfiguration.description.isNotEmpty
-          ? Text(plugin.pluginConfiguration.description)
+      leading: Icon(widget.plugin.pluginConfiguration.icon),
+      title: Text(widget.plugin.pluginConfiguration.name),
+      subtitle: widget.plugin.pluginConfiguration.description.isNotEmpty
+          ? Text(widget.plugin.pluginConfiguration.description)
           : null,
       trailing: ValueListenableBuilder(
-        valueListenable: plugin.pluginConfiguration.enable,
+        valueListenable: widget.plugin.pluginConfiguration.enable,
         builder: (BuildContext context, bool value, Widget? child) {
           return Switch.adaptive(
-            value: value,
-            onChanged: (value) =>
-                plugin.pluginConfiguration.enable.value = value,
-          );
+              value: enabled,
+              onChanged: (value) {
+                setState(() {
+                  enabled = value;
+                });
+              });
         },
       ),
       onTap: () {
-        plugin.navigation.onLaunch.call();
+        widget.plugin.navigation.onLaunch.call();
       },
     );
   }

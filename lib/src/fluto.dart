@@ -87,6 +87,16 @@ class _FlutoState extends State<Fluto> {
 
   @override
   Widget build(BuildContext context) {
+    bool showAllPlugin = true;
+
+    final Map<String, bool> pluginToShow = {};
+
+    if (showAllPlugin) {
+      for (var plugin in FlutoPluginRegistrar.pluginList) {
+        pluginToShow.addEntries([MapEntry(plugin.devIdentifier, true)]);
+      }
+    }
+
     Widget child = widget.child;
 
     for (final widgetBuilder in widget.wrappedWidgetList.reversed) {
@@ -97,6 +107,7 @@ class _FlutoState extends State<Fluto> {
       create: (context) => FlutoProvider(
         navigatorKey: widget.navigatorKey,
         show: widget.show,
+        enabledPlugin: pluginToShow,
       ),
       builder: (context, child) {
         final showDialog = context
