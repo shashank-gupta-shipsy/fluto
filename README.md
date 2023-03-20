@@ -37,4 +37,4 @@ If you would like to contribute to the plugin (e.g. by improving the documentati
 ## Author
 
 
-This Geolocator plugin for Flutter is developed by [Shashank Gupta](https://github.com/shashankgupta3891).
+Fluto for Flutter is developed by [Shashank Gupta](https://github.com/shashankgupta3891).
